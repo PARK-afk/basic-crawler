@@ -1,4 +1,5 @@
 package com.example.crawler;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -11,31 +12,21 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
+@Slf4j
 public class WebCrawlService {
-
-    // URL을 입력받아 크롤링하는 메서드
     public void crawl(String url) {
         try {
-            // Jsoup을 사용해 URL에서 HTML 페이지를 가져옴
-            Document document = Jsoup.connect(url).get();
-
-            // 페이지 제목 추출
-            String title = document.outerHtml();
-
-            // 모든 링크 추출
-            StringBuilder data = new StringBuilder();
-            data.append("Title: ").append(title).append("\n");
-            System.out.println("BEFORE : "+data.toString());
-
-//            document.select("a[href]").forEach(link -> {
-//                data.append("Link: ").append(link.attr("href")).append(" - Text: ").append(link.text()).append("\n");
-//            });
-            System.out.println("AFTER : "+data.toString());
-            // 추출한 데이터를 텍스트 파일로 저장
-            saveDataToFile(data.toString());
-
+            Document doc = Jsoup.connect(url).get();
+            List<ItemDto> dtos = doc.select("ul.grid").select("div:has(h2, div").stream().map(ItemDto::new).toList();
+            dtos.forEach( dto -> {
+                log.info("name: {}, cost: {}", dto.getName(), dto.getCost());
+                saveDataToFile(dto.getName());
+                saveDataToFile(dto.getCost());
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
