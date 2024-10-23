@@ -10,9 +10,15 @@ public class WebCrawlController {
     @Autowired
     private WebCrawlService webCrawlService;
 
+//    @GetMapping("/")
+//    public void index() {
+//        webCrawlService.crawl();
+//    }
+
     @GetMapping("/crawl")
     public String crawl(@RequestParam String url) {
         webCrawlService.crawl(url);
-        return "Crawling URL: " + url;
+//        return "Crawling URL: " + url;
+        return "crawling" + url;
     }
 }
